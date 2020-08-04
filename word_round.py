@@ -49,16 +49,13 @@ class WordRound:
 		self.letters.append(letter)
 
 
-
-# word = WordRound()
-# word.add_vowel()
-# word.add_vowel()
-# word.add_vowel()
-# word.add_consonant()
-# word.add_consonant()
-# word.add_consonant()
-# word.add_consonant()
-# print(word.letters)
-
-
-# letter = random.choice( letters )
+# Runs 
+word = WordRound()
+word.add_vowel()
+word.add_vowel()
+word.add_vowel()
+word.add_consonant()
+word.add_consonant()
+word.add_consonant()
+word.add_consonant()
+print(word.letters)

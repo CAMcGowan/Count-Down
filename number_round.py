@@ -9,7 +9,8 @@ import numpy as np
 # big numbers - done
 # number store - done
 # A target generator - done
-# solutions finder
+# solutions finder 
+# - 
 
 class NumberRound:
 	# The class for the number rounds
@@ -96,23 +97,19 @@ class NumberSolver:
 # 191102976 possible combinations
 #print(6*4*6*4*6*4*6*4*6*4*6*4)
 
-nums = [1,2,3,4,5,6]
-operators = ['+', '-', '/', '*']
-
 
 add = lambda a,b: a+b
 sub = lambda a,b: a-b
 mul = lambda a,b: a*b
 div = lambda a,b: a/b if a % b == 0 else 0/0
 # Create a list of operators
-operators = [(add, '+'), (sub, '-')]#, (mul, '*'), (div, '/')]
+operators = [(add, ' + '), (sub, ' - ')]#, (mul, ' * '), (div, ' / ')]
 
 #rint(solve_test([], [5,6]))
 # Need an eval function for this
 
-def equation_solver(equation, target):
+def equation_solver(equation):
 	# Function to solve the value of the equation
-	print('Solver', equation)
 	for i in range(len(equation)):
 		# Store the first value as the current result
 		if i == 0:
@@ -122,43 +119,36 @@ def equation_solver(equation, target):
 		else:
 			# All odd values of i will be operators and even ints
 			if i % 2 != 0:
-				print('Test', equation[i], result, equation[i+1])
 				result = equation[i][0](result, equation[i+1])
-	print('Solver result', result)
 
-	# Check to see if result matches target			
-	if result == target:
-		return True
-	else:
-		return False
+	return result
 
-	#return result
 
-# x = equation_solver([5, (add, '+'), 6, (sub, '-'), 7, (sub, '-'), 3])
-# print(x)
 
-# I want to create 3 solutions for each, after which I want to stop
-def Solver(equation, numbers, target):
-	solutions = []
-	# while len(solutions) < 6:
-	# 	#equation = []
-	for i, n in enumerate(numbers):
-		equation.append(n)
-		remaining = numbers[i+1:]
+def Solve(equation, nums, target):
 
-		print('Passing the equation', equation, i)
+    for n in range(len(nums)):
+        equation.append( nums[n] )
 
-		if equation_solver(equation, target) == True:
-			solutions.append(equation)
+        remaining = nums[:n] + nums[n+1:]
 
-		if len(remaining) > 0:
-			for op in operators:
-				equation.append(op)
-				equation = Solver(equation, remaining, target)
-				equation = equation[:-1]
-        #print(equation)
+        if equation_solver(equation) == target:
+        	equation_str = ''
+        	for i in equation:
+        		if type(i) == int:
+        			equation_str += str(i)
+        		else:
+        			equation_str += i[1]
+        	print(equation_str)
 
-		equation = equation[:-1]
-	return solutions
+        if len(remaining) > 0:
+            for op in operators:
+                equation.append(op)
+                equation = Solve(equation, remaining, target)
+                equation = equation[:-1]
 
-print(Solver([], [5,6,7], 11))
+        equation = equation[:-1]
+
+    return equation
+
+Solve([], [5,6,7,8], 14)
