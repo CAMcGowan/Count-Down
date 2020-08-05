@@ -47,35 +47,6 @@ class NumberRound:
 		self.numbers.append(x)
 		#return x
 
-class NumberSolver:
-	def __init__(self, numbers, target):
-		# Define the operators
-		self.add = lambda a,b: a+b
-		self.sub = lambda a,b: a-b
-		self.mul = lambda a,b: a*b
-		self.div = lambda a,b: a/b if a % b == 0 else 0/0
-		# Create a list of operators
-		self.operators = [(self.add, '+'), (self.sub, '-'), (self.mul, '*'), (self.div, '/')]
-		self.numbers = numbers
-		self.target = target
-
-	# I need to loop de loop
-	# This will be to loop the numbers and the operator combinations
-	def Solve(self):
-		# loop the numbers
-		total = 0
-		equation = []
-		for i, n in enumerate(self.numbers):
-			#print(n)
-			equation.append(n)
-			print(equation)
-
-			#total = self.add(total, n)
-			print(total)
-
-
-#NumberSolver([5,4,3], 23).Solve()
-
 # Numbers game 5 numbers 1 big 
 # new_game = NumberRound()
 # new_game.change_target()
@@ -89,13 +60,87 @@ class NumberSolver:
 # print(new_game.numbers)
 # print(new_game.target)
 
+class NumberSolver:
+	""" This Class is used to solve the number rounds it works by
+		taking the input values and converts them into equations 
+		using mathematical operators +, -, *, / """
+	def __init__(self, numbers, target):
+		# Define the operators
+		self.add = lambda a,b: a+b
+		self.sub = lambda a,b: a-b
+		self.mul = lambda a,b: a*b
+		self.div = lambda a,b: a/b if a % b == 0 else 0/0
+		# Create a list of operators
+		self.operators = [(self.add, '+'), (self.sub, '-'), (self.mul, '*'), (self.div, '/')]
+		self.numbers = numbers
+		self.target = target
+		#lists
+		self.equation, self.solutions = [], []
 
-# Solution generator
-# 6 numbers
-# 4 operators
-# Number of possibilities 6*4*6*4*6*4*6*4*6*4*6*4
-# 191102976 possible combinations
-#print(6*4*6*4*6*4*6*4*6*4*6*4)
+# 	def equation_solver(equation):
+# 	# Function to solve the value of the equation
+# 		for i in range(len(equation)):
+# 			# Store the first value as the current result
+# 			if i == 0:
+# 				result = equation[i]
+
+# 			# Handle new parts of the equation
+# 			else:
+# 				# All odd values of i will be operators and even ints
+# 				if i % 2 != 0:
+# 					result = equation[i][0](result, equation[i+1])
+
+# 		return result
+
+	# def Solve(self):
+
+	# 	def equation_solver(equation):
+	# 	# Function to solve the value of the equation
+	# 		for i in range(len(equation)):
+	# 			# Store the first value as the current result
+	# 			if i == 0:
+	# 				result = equation[i]
+
+	# 			# Handle new parts of the equation
+	# 			else:
+	# 				# All odd values of i will be operators and even ints
+	# 				if i % 2 != 0:
+	# 					result = equation[i][0](result, equation[i+1])
+
+	# 	def looper(self):
+
+	# 	    for n in range(len(self.numbers)):
+	# 	        self.equation.append( self.numbers[n] )
+
+	# 	        remaining = self.numbers[:n] + self.numbers[n+1:]
+
+	# 	        if equation_solver(self.equation) == self.target:
+	# 	        	self.equation_str = ''
+	# 	        	for i in self.equation:
+	# 	        		if type(i) == int:
+	# 	        			equation_str += str(i)
+	# 	        		else:
+	# 	        			equation_str += i[1]
+	# 	        	self.solutions.append(self.equation_str)
+
+	# 	        if len(remaining) > 0:
+	# 	            for op in self.operators:
+	# 	                self.equation.append(op)
+	# 	                self.equation, self.solutions = self.Solve()
+	# 	                self.equation = self.equation[:-1]
+
+	# 	        self.equation = self.equation[:-1]
+
+	# 	    return self.equation, self.solutions
+
+	# 	looper(self)
+
+	# 	return self.solutions
+
+
+#NumberSolver([5,4,3], 23).Solve()
+# n = NumberSolver([5,6,7,8], 14)
+# print(n.Solve())
 
 
 add = lambda a,b: a+b
@@ -125,30 +170,52 @@ def equation_solver(equation):
 
 
 
-def Solve(equation, nums, target):
+def Solve(equation, nums, target, solutions):
 
-    for n in range(len(nums)):
-        equation.append( nums[n] )
+	def equation_solver(equation):
+	# Function to solve the value of the equation
+		for i in range(len(equation)):
+			# Store the first value as the current result
+			if i == 0:
+				result = equation[i]
 
-        remaining = nums[:n] + nums[n+1:]
+			# Handle new parts of the equation
+			else:
+				# All odd values of i will be operators and even ints
+				if i % 2 != 0:
+					result = equation[i][0](result, equation[i+1])
 
-        if equation_solver(equation) == target:
-        	equation_str = ''
-        	for i in equation:
-        		if type(i) == int:
-        			equation_str += str(i)
-        		else:
-        			equation_str += i[1]
-        	print(equation_str)
+		return result
 
-        if len(remaining) > 0:
-            for op in operators:
-                equation.append(op)
-                equation = Solve(equation, remaining, target)
-                equation = equation[:-1]
+	def recursion(equation, nums, target, solutions):
+	    for n in range(len(nums)):
+	        equation.append( nums[n] )
 
-        equation = equation[:-1]
+	        remaining = nums[:n] + nums[n+1:]
 
-    return equation
+	        if equation_solver(equation) == target:
+	        	equation_str = ''
+	        	for i in equation:
+	        		if type(i) == int:
+	        			equation_str += str(i)
+	        		else:
+	        			equation_str += i[1]
+	        	solutions.append(equation_str)
 
-Solve([], [5,6,7,8], 14)
+	        if len(remaining) > 0:
+	            for op in operators:
+	                equation.append(op)
+	                equation, solutions = recursion(equation, remaining, target, solutions)
+	                equation = equation[:-1]
+
+	        equation = equation[:-1]
+
+	    return equation, solutions
+
+	equation, ans = recursion(equation, nums, target, solutions)
+
+	return ans
+
+s = Solve([], [5,6,7,8], 14, [])
+print(min(s, key=len))
+
