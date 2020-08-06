@@ -1,5 +1,5 @@
 # Count-Down
-This repo is for a python version of the game of countdown.
+This repo is for a python version of the game countdown.
 
 Currently the game has features classes for both a number round and word round. This is found in main.py.
 The word round features a letter selector with the option of vowels or consonants and all letters have assigned weightings as they do in the show. 
