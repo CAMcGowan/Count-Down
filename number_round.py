@@ -19,6 +19,17 @@ class NumberRound:
 		self.target = 0
 		self.small_numbers = np.repeat(np.linspace(1,10, 10, dtype=int), 2)
 		self.big_numbers = np.linspace(25, 100, 4, dtype=int)
+		# Define the operators
+		self.add = lambda a,b: a+b
+		self.sub = lambda a,b: a-b
+		self.mul = lambda a,b: a*b
+		self.div = lambda a,b: a/b if a % b == 0 else 1e6 #if a decimal this isn't allowed, so the large number will make the target answer impossible
+		# Create a list of operators
+		self.operators = [(self.add, '+'), (self.sub, '-'), (self.mul, '*'), (self.div, '/')]
+		self.nums = []
+		self.target = 0
+		# lists
+		self.equation, self.solutions = [], []
 
 	def change_target(self):
 		self.target = random.randint(0,999)
@@ -44,8 +55,67 @@ class NumberRound:
 		else:
 			self.small_numbers = np.delete(self.small_numbers, idx)
 		# store the number
-		self.numbers.append(x)
-		#return x
+		self.nums.append(x)
+
+	def solve(self):
+
+		def equation_solver(equation):
+		# Function to solve the value of the equation
+			for i in range(len(equation)):
+				# Store the first value as the current result
+				if i == 0:
+					result = equation[i]
+
+				# Handle new parts of the equation
+				else:
+					# All odd values of i will be operators and even ints
+					if i % 2 != 0:
+						result = equation[i][0](result, equation[i+1])
+
+			return result
+
+		def recursion(equation, nums, target, solutions):
+		    for n in range(len(nums)):
+		    	# Add the number to the equation
+		        equation.append( nums[n] )
+
+		        # Return the remaining numbers
+		        remaining = nums[:n] + nums[n+1:]
+
+		        # Before going futher check if the equation equals the target value
+		        if equation_solver(equation) == self.target:
+		        	# Create a readable string to output the equation
+		        	equation_str = ''
+		        	# Check type before storing part of equation
+		        	for i in equation:
+		        		# checks for any int due to numpy int32
+		        		if np.issubdtype(type(i), int) == True:
+		        			equation_str += str(i)
+		        		else:
+		        			equation_str += i[1]
+		        	solutions.append(equation_str)
+
+		        # If there are still numbers left and target not reached
+		        if len(remaining) > 0:
+		            for op in self.operators:
+		            	# Add a new operator
+		                equation.append(op)
+		                # Use recursion to repeat this step for all possible scenarios
+		                equation, solutions = recursion(equation, remaining, self.target, solutions)
+		                equation = equation[:-1]
+
+		        equation = equation[:-1]
+
+		    return equation, self.solutions
+
+		equation, ans = recursion(self.equation, self.nums, self.target, self.solutions)
+
+		if len(ans) > 0:
+			return ans
+		else:
+			return ['No solutions']
+
+
 
 # Numbers game 5 numbers 1 big 
 new_game = NumberRound()
@@ -57,8 +127,15 @@ new_game.add_number(False)
 new_game.add_number(False)
 new_game.add_number(False)
 new_game.add_number(True)
-print(new_game.numbers)
+print(new_game.nums)
 print(new_game.target)
+s = new_game.solve()
+print(min(s, key=len))
+# if len(s) > 0:
+# 	print(min(s, key=len))
+# else:
+# 	print('No solutions')
+
 
 class NumberSolver:
 	""" This Class is used to solve the number rounds it works by
@@ -124,8 +201,8 @@ class NumberSolver:
 		return ans
 
 #NumberSolver([5,4,3], 23).Solve()
-n = NumberSolver([6, 4, 9, 6, 9, 50], 646)
-#n = NumberSolver([5,6,7,8], 14)
-s = n.Solve()
-print(s)
-print(min(s, key=len))
+# n = NumberSolver([6, 4, 9, 6, 9, 50], 646)
+# #n = NumberSolver([5,6,7,8], 14)
+# s = n.Solve()
+# print(s)
+# print(min(s, key=len))
